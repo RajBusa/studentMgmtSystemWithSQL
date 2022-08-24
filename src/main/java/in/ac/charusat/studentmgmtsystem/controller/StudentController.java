@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
+
 public class StudentController {
 
     @Autowired
