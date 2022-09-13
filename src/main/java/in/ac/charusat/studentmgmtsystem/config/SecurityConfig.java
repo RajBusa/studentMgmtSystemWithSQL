@@ -30,18 +30,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 
 
-             auth.jdbcAuthentication().dataSource(dataSource)
-                     .withDefaultSchema()
-                     .withUser(
-                             User.withUsername("admin")
-                             .password("admin")
-                             .roles("ADMIN")
-                     )
-                     .withUser(
-                             User.withUsername("user")
-                                     .password("user")
-                                     .roles("USER")
-                     );
+//             auth.jdbcAuthentication().dataSource(dataSource)
+//                     .withDefaultSchema()
+//                     .withUser(
+//                             User.withUsername("admin")
+//                             .password("admin")
+//                             .roles("ADMIN")
+//                     )
+//                     .withUser(
+//                             User.withUsername("user")
+//                                     .password("user")
+//                                     .roles("USER")
+//                     );
+
+
+
     }
 
     @Override
