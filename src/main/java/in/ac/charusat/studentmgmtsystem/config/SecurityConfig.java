@@ -1,13 +1,16 @@
 package in.ac.charusat.studentmgmtsystem.config;
 
+import net.bytebuddy.build.Plugin;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,18 +18,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.sql.DataSource;
 
 @EnableWebSecurity
-//3.
-//@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 //    2.
-
-    @Autowired
-    DataSource dataSource;
+//    @Autowired
+//    DataSource dataSource;
 
 //    3.
-//    @Autowired
-//    UserServices userServices;
+    @Autowired
+    UserDetailsService userDetailsService;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -42,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 
 //              2.
-             auth.jdbcAuthentication().dataSource(dataSource);
+//             auth.jdbcAuthentication().dataSource(dataSource);
 //                     .withDefaultSchema()
 //                     .withUser(
 //                             User.withUsername("admin")
@@ -55,24 +55,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 //                                     .roles("USER")
 //                     );
 //        3.
-//        auth.userDetailsService(userServices);
+        auth.userDetailsService(userDetailsService);
 
     }
 //    2.
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest().authenticated()
+        http.authorizeRequests().antMatchers("/authenticate").permitAll()
+                .anyRequest().authenticated()
+                .and().httpBasic()
                 .and()
-                .httpBasic();
+                .logout()
+                .logoutSuccessUrl("/");
         http.csrf().disable();
         http.headers().frameOptions().disable();
-//        http.authorizeRequests().antMatchers("/signup").permitAll();
-
-
     }
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return new BCryptPasswordEncoder();
+//        return NoOpPasswordEncoder.getInstance();
+    }
+
+    @Override
+    @Bean
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 }
